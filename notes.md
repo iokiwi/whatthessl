@@ -1,21 +1,32 @@
-convert [--object objectdef] [--image-opts] [--target-image-opts] [-U] [-C] [-c] [-p] [-q] [-n] [-f fmt] [-t cache] [-T src_cache] [-O output_fmt] [-B backing_file] [-o options] [-l snapshot_param]
-
-qemu-img convert Windows_Server_2016_Datacenter_EVAL_en-us_14393_refresh.ISO -O raw server-2016.raw.img
-
-openstack image create \
-    --disk-format raw \
-    --container-format bare \
-    --min-disk 5 \
-    --property os-distro=windows \
-    --private \
-    --file server-2016.raw.img \
-    server-2016
-
-
 # Overview
 
-1. 
-3. Certificates are "signed" with a cryptographic signature to say "Yes this information is correct". We can sign our own certificates but nobody considers this credible. So we send them to an impartial 3rd party who will verify the information and give us their stamp of approval by signing the certificate with their cryptographic signature.
+1. Create a Certificate Signing Request
+2. Send CSR to Trusted Third Party to verify information. This trusted third party is called a Certificate Authority
+3. Certificate Authority verify all the information and cryptographically sign a certificate
+    a. Add details about themself "Issuer"
+    b. Sign the cerificate with thier private key
+4. Certificate Authority send the signed certificate back.
+
+Certificates are "signed" with a cryptographic signature to say "Yes this information is correct". We can sign our own certificates but nobody considers this credible. So we send them to an impartial 3rd party who will verify the information and give us their stamp of approval by signing the certificate with their cryptographic signature.
+
+# Public Key Encryption
+
+## RSA
+
+### Public Key
+
+### Private Key
+
+## Encrypting and Decrypting
+  * Encrypyt with recipient's public key - Anyone
+  * Decrypt with private key - Only the intended recipient
+
+## Signing and Verifying
+
+ * Encrypt with private key - 
+ * Decrypt with public key
+  
+If we can decrypt the message with the persons public key and the message - after decryption turns out to be as we expected then we know it was in fact the person we expected to send the message, who sent the message.
 
 # What is a certificate
 
@@ -109,6 +120,7 @@ Certificate:
     Issuer: C=NZ, ST=Wellington, L=Wellington, O=NA, CN=Simon Merrick
     ```
  * RSA Public Key
+    * Modulus and Exponent
 
 # Creating a certificate
 
@@ -123,9 +135,8 @@ openssl req -new > certificate_request.csr
 
 Creates two files:
 
- * `certificate_request.csr` - A certificate request in _PKCS#10_ format
- * `privkey.pem` - An Encrypted RSA private key
-
+* `certificate_request.csr` - A certificate request in _PKCS#10_ format
+* `privkey.pem` - An Encrypted RSA private key
 
 ### Certificate Signing Request
 
@@ -198,8 +209,9 @@ Certificate Request:
          54:66:11:33:3c:d0:ba:90:b7:93:71:a0:8b:5f:1e:7b:6b:00:
          a8:b3:1e:80
 ```
- * Your details
- * Contains your public key
+* Your details
+* Contains your public key
+* Signed with your private key
 
 ### Private Key
 
